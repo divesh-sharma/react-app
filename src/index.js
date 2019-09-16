@@ -1,39 +1,38 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import faker from 'faker';
-import CommentDetail from './CommentDetail';
-import ApprovalCard from './ApprovalCard';
-
-
-const App = () => {
-    return (
-        <div className="ui container comments">
-            <ApprovalCard>             <div>
-                <h1>Warnings?</h1>
-            Are you sure you want to do this?
+import ReactDOM from'react-dom';
+//class can have many method and borrow from react.compoenent
+class App extends React.Component{
+    constructor(props){
+        super(props);
+//this is the oonly time we do direct assihnment to this.state
+        this.state={lat:null,
+        errorMessage:''}//initialize state object we not lat so take it null
+        window.navigator.geolocation.getCurrentPosition(
+            (position)=>{
+        //we called  setstate when we have to update out state
+            this.setState({lat:position.coords.latitude});
+        // we did not this.state.lat =position.coords.latitude
+        },
+            (err)=>this.setState({errorMessage:err.message})
+           );
+    }
+    render(){
+       
+    
+         if(this.state.errorMessage&&!this.state.lat){
+             return <div>Error:{this.state.errorMessage}</div>;
+         }
+         if(!this.state.errorMessage&& this.state.lat){
+             return <div>Latitude:{this.state.lat}</div>;
+         }
+         return <div>Loading!</div>
+    }
+} 
    
 
-                </div>
-            </ApprovalCard>
-            <ApprovalCard>
-            <CommentDetail author="sam" timeAgo="Today at 4:55PM"
-   content="Nice Blog post"
-   authorImage={faker.image.avatar()}/>
-            </ApprovalCard>
- <ApprovalCard>
- <CommentDetail  author="Alex" timeAgo="Today at 2:00PM"
-   content="I Like the subject"
-   authorImage={faker.image.avatar()}/>
- </ApprovalCard>
-   <ApprovalCard>
-   <CommentDetail author="Jane" timeAgo="Today at 9:00PM" 
-   content="It good one"
-   authorImage={faker.image.avatar()}/>
-   
-   </ApprovalCard>
-   
-        </div>
-        
-    );
-};
-ReactDOM.render(<App />,document.querySelector('#root'));
+
+ReactDOM.render(
+    <App />,
+    document.querySelector('#root')
+)
+
